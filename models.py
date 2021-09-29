@@ -29,15 +29,10 @@ class Favorites(db.Model):
 
     recipe_id = db.Column(
         db.Integer,
-        db.ForeignKey('messages.id', ondelete='cascade'),
+        db.ForeignKey('recipes.id', ondelete='cascade'),
         unique=True
     )
 
-    timestamp = db.Column(
-        db.DateTime,
-        nullable = False,
-        default = datetime.utcnow()
-    )
 
 class User(db.Model):
     """User modeling."""
@@ -65,13 +60,19 @@ class User(db.Model):
         db.Text,
         nullable=False,
     )
+    
+    image_url = db.Column(
+        db.Text,
+        nullable=False,
+        default = '/static/imgs/default-avatar.jpg'
+    )
 
     recipes = db.relationship('Recipe')
 
 
     favs = db.relationship(
         'Recipe',
-        secondary="favorites"
+        secondary="favs"
     )
 
     def __repr__(self):
@@ -138,12 +139,22 @@ class Recipe(db.Model):
         unique=True,
     )
 
+    timestamp = db.Column(
+        db.DateTime,
+        nullable = False,
+        default = datetime.utcnow()
+    )
+
     user_id = db.Column(
         db.Integer,
         db.ForeignKey('users.id', ondelete='CASCADE'),
         nullable=False,
     )
 
-    user = db.relationship('User')
+    user = db.relationship('User', overlaps='recipes')
+
+    def __repr__(self):
+        return f"<Recipe #{self.id}: {self.name}, {self.searchID}>"
+
 
   

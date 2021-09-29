@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+ 
+ <!-- header -->
+ <section class="header">
+    <div class="container-fluid main-container">
+        <div class="main">
+            <h1>Best Home Cooks Recipe Finder!</h1>
+            <p id="main-p">Are you a home cook tired of wasting time looking through the pantry, freezer and having no idea what recipe to cook with what you have, or wanting to know what would it take to prepare some new recipe, you came to the right place! Discover recipes by searching by Ingredient, Cuisine or Meal name and get it done!
+            </p>
+            <a href="/singup" class="btn btn-primary btn-lg">Register now !</a>
+        </div>
+        <img src="/static/imgs/w2e.png"" alt="logo">
+    </div>
+</section>  
+
+<!-- Recipes -->
+
+<section class="recipe-example">
+    <h2>Latest Recipes</h2>
+    <hr>
+    <div class="container recipes-example"></div>
+</section>
+<!-- footer -->
+
+
+
+
+
+<!-- js -->
+ <script src="https://code.jquery.com/jquery-3.6.0.slim.js" integrity="sha256-HwWONEZrpuoh951cQD1ov2HUK5zA5DwJ1DNUXaM6FsY=" crossorigin="anonymous"></script>
+ <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+ <script src="../static/js/script.js"></script>
+
+{% endblock %}

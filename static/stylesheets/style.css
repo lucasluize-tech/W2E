@@ -156,3 +156,41 @@ hr{
     position: relative;
     border: 0 none;
 }
+
+/* login-form */
+
+.login-form{
+    max-width: 30%;
+    margin: auto;
+    border: 3px solid #cbcbd3;
+    border-radius: 10px;
+    position: relative;
+    top: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 5px 5px 10px;
+}
+
+#login_form  {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+
+#login_form > input {
+    margin-bottom: 15px;
+}
+
+#login_form > button {
+    align-self: center;
+    margin-bottom: 15px;
+    padding: 7px 23px;
+}
+
+.login-form > a {
+    align-self: center;
+    margin-bottom: 20px;
+}

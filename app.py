@@ -3,7 +3,7 @@ from models import connect_db, db, User, Recipe, Favorites
 from forms import UserAddForm, UserEditForm, LoginForm
 from flask_migrate import Migrate
 import os, requests
-from admin import getadmin, get_key
+from admin import get_admin, get_key
 from sqlalchemy.exc import IntegrityError
 
 CURR_USER_KEY = "curr_user"
@@ -23,7 +23,7 @@ app.config['SQLALCHEMY_ECHO'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "keepSecret")
 
-getadmin(app)
+get_admin(app)
 
 connect_db(app)
 migrate = Migrate(app, db)
@@ -98,7 +98,7 @@ def login():
     form = LoginForm()
 
     if form.validate_on_submit():
-        user = User.authenticate(form.username.data,
+        user = User.authenticate(form.email.data,
                                  form.password.data)
 
         if user:
@@ -108,7 +108,7 @@ def login():
 
         flash("Invalid credentials.", 'danger')
 
-    return render_template('users/login.html', form=form)
+    return render_template('/login.html', form=form)
 
 
 @app.route('/logout')

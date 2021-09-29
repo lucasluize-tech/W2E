@@ -3,6 +3,10 @@ body{
     font-family: 'Josefin Sans', sans-serif;
     box-sizing: border-box;
 }
+
+.alert{
+    margin-bottom: 0;
+}
 /* ======================= Nav */
 
 .navbar {
@@ -75,6 +79,7 @@ display: flex;
     }
 }
 .header{
+    margin-top: 0;
     margin-bottom: 40px;
     padding: 0;
 }
@@ -104,8 +109,9 @@ h1{
     text-shadow: 1px 1px;
 }
 #main-p{
+    max-width: 90%;
     font-size: 1.2rem;
-    font-weight: 300;
+    font-weight: 500;
     margin-bottom: 40px;
 }
 
@@ -128,8 +134,14 @@ h1{
 
 .card-recipe{
     margin: 10px;
+    border: 1px solid #9490cb;
+    border-radius: 10px;
 }
-
+.card-body > a {
+    text-decoration: none;
+    font-size: 1.3rem;
+    color: #9490cb;
+}
 
 h2{
     text-align: center;

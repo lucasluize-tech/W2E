@@ -1,11 +1,10 @@
-// import {secret} from './k'
-
 async function getRecipes(){
     /* this function will make a request to mealDB api
     and make a small list of random recipes*/
+
     
-    // const request = await axios.get(`${secret.BASE_URL}/${secret.API_KEY}/latest.php`)
-    const request = await axios.get(`https://www.themealdb.com/api/json/v2/9973533/latest.php`)
+    const request = await axios.get(`/api/latest`)
+
     const data = request.data
 
     for (let meal of data.meals){
@@ -14,11 +13,13 @@ async function getRecipes(){
             `<div class="card-recipe" style="width: 18rem">\
                 <img src="${ meal.strMealThumb }" class="card-img-top">\
                 <div class="card-body">
-                    <h5 class="card-title">${meal.strMeal}</h5>
+                    <a href="/recipe/${meal.idMeal}" class="card-title">${meal.strMeal}</a>
                     <p><b>Category: </b>${meal.strCategory}</p>
             </div></div>`)
     }
     
 }
 
+
 getRecipes();
+

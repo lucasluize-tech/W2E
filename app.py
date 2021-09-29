@@ -2,12 +2,13 @@ from flask import Flask, render_template, redirect, request, session, flash, g
 from models import connect_db, db, User, Recipe, Favorites
 from forms import UserAddForm, UserEditForm, LoginForm
 from flask_migrate import Migrate
-import os
-from admin import getadmin
+import os, requests
+from admin import getadmin, get_key
 from sqlalchemy.exc import IntegrityError
 
-
 CURR_USER_KEY = "curr_user"
+API_URL = "https://www.themealdb.com/api/json/v2"
+API_KEY = get_key()
 
 app = Flask(__name__)
 
@@ -20,7 +21,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['FLASK_ADMIN_SWATCH'] = 'darkly'
 app.config['SQLALCHEMY_ECHO'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "keepSecret")
 
 getadmin(app)
 
@@ -227,3 +228,30 @@ def delete_user():
 
     return redirect("/login")
 
+############################################################################
+# Recipe route
+
+@app.route('/recipe/<int:searchid>')
+def recipe(searchid):
+    """ this should return render page for the recipe """
+
+    # check for logged user
+    if not g.user:
+        flash("Access unauthorized, login or register first!", "danger")
+        return redirect("/")
+
+    else:
+        recipe = requests.get(f'{API_URL}/{API_KEY}/lookup.php?i={searchid}')
+        return render_template('recipe.html', recipe=recipe)
+
+
+############################################################################
+# API 
+
+@app.route('/api/latest')
+def get_latest():
+    """ this should return data for the latest recipes """
+
+    res = requests.get(f'{API_URL}/{API_KEY}/latest.php')
+    
+    return res.json()

@@ -241,8 +241,25 @@ def recipe(searchid):
         return redirect("/")
 
     else:
-        recipe = requests.get(f'{API_URL}/{API_KEY}/lookup.php?i={searchid}')
-        return render_template('recipe.html', recipe=recipe)
+        req = requests.get(f'{API_URL}/{API_KEY}/lookup.php?i={searchid}')
+
+        data = req.json()
+        data = data['meals'][0]
+
+        ingredients = [data[key] for key in data if key.startswith('strIngredient') ]
+
+        measurements = [data[key] for key in data if key.startswith('strMeasure') ]
+
+        tags = data['strTags'].split(',')
+        
+        return render_template('recipe/recipe.html', name=data.get('strMeal'),
+        image=data.get('strMealThumb'),
+        ingredients=ingredients,
+        measurements=measurements,
+        tags=tags,
+        instructions=data.get('strInstructions'),
+        video=data.get('strYoutube')
+        )
 
 
 ############################################################################

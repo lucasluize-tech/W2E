@@ -1,4 +1,51 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% endblock }
+<div class="section-wrapper">
+    <div class="latest-wrapper">
+        <div class="sidebar">Random Recipes</div>
+        <div class="latest-list"></div>
+    </div>
+    <div class="container-fluid main-wrapper">
+        <div class="welcome">Welcome, <span class="purple">
+            <a id="user-link" href="/users/profile">{{user.username}}</a>
+        </span></div>
+        <div class="separator mb-4"></div>
+        <form class="meal-form" action="#">
+
+            <p style="font-size: 2rem; font-weight: bold">Filter by:</p>
+            <div class='mb-4'>Select a field to get a list of meals or type to search by meal name.<br>Please only select <u><b>one</b></u> field.</div>
+
+            <label class="form-control-label" for="category">Category</label>
+            <select class="form-select mb-4" name="category" id="category">
+                <option value="none">None</option>
+            </select>
+            <label class="form-control-label" for="cuisine">Cuisine</label>
+            <select class="form-select mb-4" name="cuisine" id="cuisine">
+                <option value="none">None</option>
+            </select>
+            <label class="form-control-label" for="ingredient">Ingredient</label>
+            <select class="form-select mb-4" name="ingredient" id="ingredient">
+                <option value="none">None</option>
+            </select>
+
+            <label for="search">Meal name: (e.g: Arrabiata)</label>
+            <input class="form-control mb-4" type='text' name='search' id="search" placeholder="search here">
+
+            <button class='btn btn-primary btn-lg'type="submit">Find</button>
+
+        </form>
+    </div>
+</div>
+<div class="results-wrapper">
+    <ul class="results">
+        <!-- append here results from search -->
+    </ul>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.slim.js" integrity="sha256-HwWONEZrpuoh951cQD1ov2HUK5zA5DwJ1DNUXaM6FsY=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="../static/js/script2.js"></script>
+
+
+{% endblock %}

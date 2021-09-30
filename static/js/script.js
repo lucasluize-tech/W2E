@@ -10,7 +10,7 @@ async function getRecipes(){
     for (let meal of data.meals){
         
         $('.recipes-example').append(
-            `<div class="card-recipe" style="width: 18rem">\
+            `<div class="card-recipe" style="width: 9rem">\
                 <img src="${ meal.strMealThumb }" class="card-img-top">\
                 <div class="card-body">
                     <a href="/recipe/${meal.idMeal}" class="card-title">${meal.strMeal}</a>

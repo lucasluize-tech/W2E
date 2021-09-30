@@ -22,5 +22,5 @@ class UserEditForm(FlaskForm):
 class LoginForm(FlaskForm):
     """Login form."""
 
-    email= StringField('Username', validators=[DataRequired(), Email()])
+    email= StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[Length(min=6)])

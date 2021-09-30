@@ -55,8 +55,8 @@ def do_logout():
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
 
-@app.route('/signup', methods=["GET", "POST"])
-def signup():
+@app.route('/register', methods=["GET", "POST"])
+def register():
     """Handle user signup.
 
     Create new user and add to DB. Redirect to home page.
@@ -81,14 +81,14 @@ def signup():
 
         except IntegrityError:
             flash("Username already taken", 'danger')
-            return render_template('users/signup.html', form=form)
+            return render_template('signup.html', form=form)
 
         do_login(user)
 
         return redirect("/")
 
     else:
-        return render_template('users/signup.html', form=form)
+        return render_template('register.html', form=form)
 
 
 @app.route('/login', methods=["GET", "POST"])
@@ -145,7 +145,7 @@ def homepage():
         
         
         return render_template('home.html', recipes=recipes, 
-        favs=g.user.favs)
+        user=g.user)
 
     else:
         return render_template('home-anon.html')
@@ -254,4 +254,45 @@ def get_latest():
 
     res = requests.get(f'{API_URL}/{API_KEY}/latest.php')
     
+    return res.json()
+
+@app.route('/api/random')
+def get_random():
+    """ this should return data for random recipes """
+
+    res = requests.get(f'{API_URL}/{API_KEY}/randomselection.php')
+    
+    return res.json()
+
+@app.route('/api/category/<category>')
+def get_list_by_category(category):
+    """ this should return data for filtered recipes by category """
+
+    res = requests.get(f'{API_URL}/{API_KEY}/filter.php', params={"c":category})
+
+    return res.json()
+
+@app.route('/api/cuisine/<cuisine>')
+def get_list_by_cuisine(cuisine):
+    """ this should return data for filtered recipes by cuisine """
+
+    res = requests.get(f'{API_URL}/{API_KEY}/filter.php', params={"a":cuisine})
+
+    return res.json()
+
+@app.route('/api/ingredient/<ingredient>')
+def get_list_by_ingredient(ingredient):
+    """ this should return data for filtered recipes by ingredient """
+
+    res = requests.get(f'{API_URL}/{API_KEY}/filter.php', params={"i":ingredient})
+
+    return res.json()
+
+@app.route('/api/meal/<meal>')
+def get_list_by_meal(meal):
+    """ this should return data for filtered recipes by meal name """
+
+    meal= meal.strip().lower()
+    res = requests.get(f'{API_URL}/{API_KEY}/search.php', params={"s":meal})
+
     return res.json()

@@ -151,10 +151,30 @@ class Recipe(db.Model):
         nullable=False,
     )
 
+    image_url = db.Column(
+        db.Text,
+        nullable=False,
+        default='https://w7.pngwing.com/pngs/424/17/png-transparent-pierogi-kulich-roulade-cooking-recipe-cooking-purple-violet-recipe.png'
+    )
+
     user = db.relationship('User', overlaps='recipes')
 
     def __repr__(self):
         return f"<Recipe #{self.id}: {self.name}, {self.searchID}>"
+
+    @classmethod
+    def create(cls, name, searchID, user_id, image_url):
+        """ Add recipe to database """
+
+        recipe = Recipe(
+            name=name,
+            searchID=searchID,
+            user_id=user_id,
+            image_url=image_url,
+        )
+
+        db.session.add(recipe)
+        return recipe
 
 
   

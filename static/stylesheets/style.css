@@ -311,6 +311,61 @@ hr{
     justify-content:space-evenly;
 }
 
+/* recipe page */
+
+.section1{
+    display: flex;
+    justify-content:space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+}
+
+.recipe-title{
+    font-size: 3rem;
+    font-weight: 900;
+    color: #9490cb;
+}
+
+.section2{
+    display: flex;
+    margin-bottom: 2rem;
+    justify-content: space-evenly;
+}
+.section2 > img {
+    border-radius: 20px;
+}
+.recipe-image-wrapper{
+    max-width: 30%;
+}
+
+.recipe-ingredients{
+    display: flex;
+    flex-direction: column;
+}
+
+.ingredients-container{
+    display:flex;
+    flex-direction: column;
+}
+.measurements-container{
+    display:flex;
+    flex-direction: column;
+}
+
+.recipe-instructions{
+    max-width: 50%;
+}
+
+.tags{
+    margin: 20px 0px;
+    position: relative;
+    left: 30vw;
+}
+
+.section3{
+    margin: 30px;
+}
 /* footer */
 
 .site-footer{

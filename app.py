@@ -81,14 +81,14 @@ def register():
 
         except IntegrityError:
             flash("Username already taken", 'danger')
-            return render_template('signup.html', form=form)
+            return render_template('/user/register.html', form=form)
 
         do_login(user)
 
         return redirect("/")
 
     else:
-        return render_template('register.html', form=form)
+        return render_template('/user/register.html', form=form)
 
 
 @app.route('/login', methods=["GET", "POST"])
@@ -108,7 +108,7 @@ def login():
 
         flash("Invalid credentials.", 'danger')
 
-    return render_template('/login.html', form=form)
+    return render_template('/user/login.html', form=form)
 
 
 @app.route('/logout')
@@ -175,7 +175,7 @@ def favorites():
     
     favorites = Favorites.query.filter_by(user_id=g.user.id).all()
 
-    return render_template('favorites.html', favorites = favorites)
+    return render_template('/user/favorites.html', favorites = favorites)
     
 @app.route('/users/profile', methods=["GET", "POST"])
 def profile():
@@ -250,7 +250,14 @@ def recipe(searchid):
 
         measurements = [data[key] for key in data if key.startswith('strMeasure') ]
 
-        tags = data['strTags'].split(',')
+        if data['strTags']:
+            tags = data.get('strTags').split(',')
+        else:
+            tags = []
+
+        if data['strYoutube']:
+            video = data.get('strYoutube').split('v=')[1]
+        else: video=""
         
         return render_template('recipe/recipe.html', name=data.get('strMeal'),
         image=data.get('strMealThumb'),
@@ -258,10 +265,34 @@ def recipe(searchid):
         measurements=measurements,
         tags=tags,
         instructions=data.get('strInstructions'),
-        video=data.get('strYoutube')
+        video=video,
+        searchid=data.get('idMeal')
         )
 
+@app.route('/favorites/add/<int:searchid>')
+def add_favorite(searchid):
+    # should add recipe to favorites list
 
+    # check for logged user
+    if not g.user:
+        flash("You are not adding any recipe!", "danger")
+        return redirect("/")
+
+    req = requests.get(f'{API_URL}/{API_KEY}/lookup.php?i={searchid}')
+    data = req.json()
+    data = data['meals'][0]
+
+    new_recipe = Recipe.create(
+        data.get('strMeal'),
+        data.get('idMeal'),
+        g.user.id,
+        data.get('strMealThumb')
+    )
+
+    flash('succesfully added to Favorites!', "success")
+    return redirect("/")
+
+    
 ############################################################################
 # API 
 

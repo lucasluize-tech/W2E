@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="container-fluid">
+    <div class="login-form">
+        <h2 class="mb-3 mt-3" style="color: #9490cb; font-weight: 700px;">Edit</h2>
+        <form method="POST" id="login_form">
+            {{ form.hidden_tag() }} <!-- CSRF protection -->
+    
+            {% for field in form if field.widget.input_type != 'hidden' %}
+              {% for error in field.errors %}
+                <span class="text-danger">{{ error }}</span>
+              {% endfor %}
+              {{ field(placeholder=field.label.text, class="form-control") }}
+            {% endfor %}
+    
+            <button class="btn btn-primary btn-block btn-lg">Edit</button>
+          </form>
+          <p style="font-weight: bold;">or</p>
+          <a href="/" class="btn btn-primary btn-lg">Home</a>
+    </div>
+</section> 
+{% endblock %}

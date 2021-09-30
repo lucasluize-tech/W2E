@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="section1 container">
+    <div class="recipe-title">{{name}}</div>
+    <div class="add-favorites">
+        <a href="/favorites/add/{{searchid}}"><span class="fa fa-star">Add to Favorites</span></a></div>
+</div>
+
+<div class="section2">
+    <img src="{{image}}" alt="recipe image" width="500px" height="500px">
+
+    <div class="recipe-ingredients">
+        <h2>Ingredients:</h2>
+        <ol>
+            {% for ingredient in ingredients %}
+                {% if ingredient|length > 1 %}
+                <li class ="igredient-item">{{ingredient}}</li>
+                {% endif%}
+            {% endfor %}
+        </ol>
+    </div>
+
+    <div class="measurements-container">
+        <h2>Measurements:</h2>
+        <ul>
+            {% for measure in measurements %}
+                {% if measure|length > 1 %}
+                <li class ="measure-item">{{measure}}</li>
+                {% endif%}
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div class="tags">
+    <span class="h5">Tags: </span>
+    {% for tag in tags %}
+    <span class="badge rounded-pill bg-info">{{tag}}</span>
+    {% endfor %}
+</div>
+
+<div class="section3 d-flex justify-content-between align-items-center">
+    <div class="recipe-instructions">
+        <div class="instruction-title h2 mb-2">Instructions:</div>
+        <div class="instructions-text lead">{{instructions}}</div>
+    </div>
+
+    <div class="recipe-video">
+        <iframe width="480" height="360"
+        src="https://www.youtube.com/embed/{{video}}">
+        </iframe> 
+    </div>
+</div>
+
+<div class="separator m-3"></div>
+<script>
+    
+</script>
+{% endblock %}

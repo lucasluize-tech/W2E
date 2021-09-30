@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="profile-section">
+    <div class="card-wrapper">
+        <div class="pic_profile">
+            <img src="{{user.image_url}}" alt="user profile pic">
+            <div class="profile">
+                <div class="username">{{user.username}}</div>
+                <div class="email">{{user.username}}</div>
+                <div class="user-recipes">{{ user.recipes | lenghth }}</div>
+            </div>
+        </div>
+
+        <div class="profile-buttons">
+            <a href="/users/edit" class="btn btn-primary btn-lg">Edit</a>
+            <a href="/users/delete" class="btn btn-secondary btn-lg">Delete</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

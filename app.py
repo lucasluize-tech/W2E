@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, request, session, flash, g
 from models import connect_db, db, User, Recipe, Favorites
 from forms import UserAddForm, UserEditForm, LoginForm
 from flask_migrate import Migrate
-import os, requests
+import os, requests, re
 # from admin import get_admin, get_key
 from sqlalchemy.exc import IntegrityError, NoResultFound
 
@@ -14,8 +14,11 @@ app = Flask(__name__)
 
 # Get DB_URI from environ variable (useful for production/testing) or,
 # if not set there, use development local db.
-app.config['SQLALCHEMY_DATABASE_URI'] = (
-    os.environ.get('DATABASE_URL', 'postgresql:///W2E'))
+URI = os.environ.get('DATABASE_URL', 'postgresql:///W2E')
+if URI.startswith("postgres://"):
+    URI = URI.replace("postgres://", "postgresq://", 1)
+app.config['SQLALCHEMY_DATABASE_URI'] = URI
+    
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['FLASK_ADMIN_SWATCH'] = 'darkly'

@@ -19,7 +19,8 @@ class Favorites(db.Model):
 
     id = db.Column(
         db.Integer,
-        primary_key=True
+        primary_key=True,
+        autoincrement=True
     )
 
     user_id = db.Column(
@@ -42,6 +43,7 @@ class User(db.Model):
     id = db.Column(
         db.Integer,
         primary_key=True,
+        autoincrement=True
     )
 
     email = db.Column(
@@ -124,6 +126,7 @@ class Recipe(db.Model):
     id = db.Column(
         db.Integer,
         primary_key=True,
+        autoincrement=True
     )
 
     name = db.Column(
@@ -164,6 +167,8 @@ class Recipe(db.Model):
         )
 
         db.session.add(recipe)
+        recipe = recipe.query.filter_by(name=name).one()
+
         return recipe
 
 

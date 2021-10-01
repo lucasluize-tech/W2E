@@ -5,15 +5,15 @@
 <div class="profile-section">
     <div class="card-wrapper">
         <div class="pic_profile">
-            <img src="{{user.image_url}}" alt="user profile pic">
+            <img id="pic" src="{{user.image_url}}" alt="user profile pic">
             <div class="profile">
-                <div class="username">{{user.username}}</div>
-                <div class="email">{{user.username}}</div>
-                <div class="user-recipes">{{ user.recipes | lenghth }}</div>
+                <div class="username h1">{{user.username}}</div>
+                <div class="email mb-2">{{user.email}}</div>
+                <div class="user-recipes">Favorites : {{ user.favs | length }}</div>
             </div>
         </div>
 
-        <div class="profile-buttons">
+        <div class="profile-buttons mb-3">
             <a href="/users/edit" class="btn btn-primary btn-lg">Edit</a>
             <a href="/users/delete" class="btn btn-secondary btn-lg">Delete</a>
         </div>

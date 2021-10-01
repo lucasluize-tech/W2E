@@ -4,8 +4,15 @@
 
 <div class="section1 container">
     <div class="recipe-title">{{name}}</div>
+    {% if recipe in favs %}
     <div class="add-favorites">
-        <a href="/favorites/add/{{searchid}}"><span class="fa fa-star">Add to Favorites</span></a></div>
+        <form action="/favorites/delete/{{searchid}}" method="POST" class="delete-recipe"><button><span class="fa fa-times"> Remove from Favorites</span></button></form>
+    </div>
+    {% else %}
+    <div class="add-favorites">
+        <form action="/favorites/add/{{searchid}}" method="POST" class="add-recipe"><button><span class="fa fa-star"> Add to Favorites</span></a></button></form>
+    </div>
+    {% endif %}
 </div>
 
 <div class="section2">
@@ -15,7 +22,7 @@
         <h2>Ingredients:</h2>
         <ol>
             {% for ingredient in ingredients %}
-                {% if ingredient|length > 1 %}
+                {% if (ingredient) and (ingredient != "")  %}
                 <li class ="igredient-item">{{ingredient}}</li>
                 {% endif%}
             {% endfor %}
@@ -24,13 +31,13 @@
 
     <div class="measurements-container">
         <h2>Measurements:</h2>
-        <ul>
+        <ol>
             {% for measure in measurements %}
-                {% if measure|length > 1 %}
+                {% if (measure|length >= 1) %}
                 <li class ="measure-item">{{measure}}</li>
                 {% endif%}
             {% endfor %}
-        </ul>
+        </ol>
     </div>
 </div>
 

@@ -1,18 +1,18 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="favorites-title">Favorites</div>
-<div class="favorites-wrapper">
-    {% for fav in user.favs %}
-    <div class="card" style="width: 9rem;">
-        <img src="{{user.recipes.image_url}}" class="card-img-top" alt="...">
+<div class="favorites-title h1 m-5" style="color:#9490cb; font-weight: 700;">Favorites</div>
+<div class="favorites-wrapper container">
+    {% for fav in favorites %}
+    <div class="card" style="width: 12rem;">
+        <img src="{{fav.image_url}}" class="card-img-top" alt="...">
         <div class="card-body">
-            <a href="/recipe/{{user.recipes.searchID}}" class="btn btn-primary">
-                <h5 class="card-title">{{user.recipes.name}}</h5>
+            <a href="/recipe/{{fav.searchID}}">
+                <h5 class="card-title">{{fav.name}}</h5>
             </a>
         </div>
     </div>
-    {% endfor% }
+    {% endfor %}
 </div>
 
 {% endblock %}

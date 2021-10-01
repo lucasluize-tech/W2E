@@ -15,8 +15,7 @@ class UserEditForm(FlaskForm):
 
     username = StringField('Username')
     email = StringField('E-mail', validators=[Email()])
-    image_url = StringField('Avatar image')
-    header_image_url = StringField('Header image')
+    image_url = StringField('image URL')
     password = PasswordField('Password', validators=[Length(min=6)])
 
 class LoginForm(FlaskForm):

@@ -4,7 +4,7 @@ from forms import UserAddForm, UserEditForm, LoginForm
 from flask_migrate import Migrate
 import os, requests
 from admin import get_admin, get_key
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, NoResultFound
 
 CURR_USER_KEY = "curr_user"
 API_URL = "https://www.themealdb.com/api/json/v2"
@@ -133,18 +133,8 @@ def homepage():
     """
     
     if g.user:
-        recipe_ids = []
-        for recipe in g.user.recipes:
-            recipe_ids.append(recipe.searchID)
-
-        recipes= (Recipe
-                    .query
-                    .filter(Recipe.user_id.in_(recipe_ids))
-                    .limit(3)
-                    .all())
-        
-        
-        return render_template('home.html', recipes=recipes, 
+  
+        return render_template('home.html',
         user=g.user)
 
     else:
@@ -173,14 +163,24 @@ def favorites():
         flash("Access unauthorized.", "danger")
         return redirect("/")
     
-    favorites = Favorites.query.filter_by(user_id=g.user.id).all()
+    favorites = g.user.favs
 
-    return render_template('/user/favorites.html', favorites = favorites)
+    return render_template('/user/favorites.html', favorites=favorites)
     
 @app.route('/users/profile', methods=["GET", "POST"])
 def profile():
     """Update profile for current user."""
     # make sure user is logged in
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+    
+    else:
+        return render_template('user/profile.html', user=g.user)
+
+@app.route('/users/edit', methods=["GET", "POST"])
+def edit_user():
+    """ edit user """
     if not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/")
@@ -205,13 +205,14 @@ def profile():
                 return redirect('/users/profile')
 
             except IntegrityError:
-                flash("Username already taken", 'danger')
-                return render_template('users/edit.html', form=form, user=g.user)
+                flash("E-mail already taken", 'danger')
+                return render_template('user/edit.html', form=form, user=g.user)
         else:
             flash("Invalid Password", 'danger')
-            return render_template('users/edit.html', form=form, user=g.user)
+            return render_template('user/edit.html', form=form, user=g.user)
     else:
-        return render_template('users/edit.html', form=form, user=g.user)
+        return render_template('user/edit.html', form=form, user=g.user)
+
 
 @app.route('/users/delete', methods=["POST"])
 def delete_user():
@@ -248,7 +249,7 @@ def recipe(searchid):
 
         ingredients = [data[key] for key in data if key.startswith('strIngredient') ]
 
-        measurements = [data[key] for key in data if key.startswith('strMeasure') ]
+        measurements = [data[key] for key in data if key.startswith('strMeasure') and data[key] != " "]
 
         if data['strTags']:
             tags = data.get('strTags').split(',')
@@ -258,20 +259,27 @@ def recipe(searchid):
         if data['strYoutube']:
             video = data.get('strYoutube').split('v=')[1]
         else: video=""
-        
-        return render_template('recipe/recipe.html', name=data.get('strMeal'),
+        try:
+            recipe = Recipe.query.filter_by(searchID=searchid).one()
+        except NoResultFound:
+            recipe = None
+
+        return render_template('recipe/recipe.html',
+        name=data.get('strMeal'),
         image=data.get('strMealThumb'),
         ingredients=ingredients,
         measurements=measurements,
         tags=tags,
         instructions=data.get('strInstructions'),
         video=video,
-        searchid=data.get('idMeal')
+        searchid=data.get('idMeal'),
+        recipe=recipe,
+        favs=g.user.favs
         )
 
-@app.route('/favorites/add/<int:searchid>')
+@app.route('/favorites/add/<int:searchid>', methods=["POST"])
 def add_favorite(searchid):
-    # should add recipe to favorites list
+    ''' should add recipe to favorites list '''
 
     # check for logged user
     if not g.user:
@@ -282,17 +290,45 @@ def add_favorite(searchid):
     data = req.json()
     data = data['meals'][0]
 
-    new_recipe = Recipe.create(
-        data.get('strMeal'),
-        data.get('idMeal'),
-        g.user.id,
-        data.get('strMealThumb')
-    )
+    try:
+        recipe = Recipe.query.filter_by(searchID=searchid).one()
+    except NoResultFound:
+        recipe = None
+
+    if not recipe:
+        recipe = Recipe.create(
+            data.get('strMeal'),
+            data.get('idMeal'),
+            data.get('strMealThumb')
+        )
+        print(f'{g.user} added new recipe to db')
+        
+
+    add_fav = Favorites(user_id = g.user.id, recipe_id=recipe.id)
+    db.session.add(add_fav)
+    db.session.commit()
 
     flash('succesfully added to Favorites!', "success")
-    return redirect("/")
+    return redirect(f"/recipe/{searchid}")
 
-    
+@app.route('/favorites/delete/<int:searchid>', methods=["POST"])
+def delete_from_favorites(searchid):
+    """ should delete from favorites """
+
+    # check for logged user
+    if not g.user:
+        flash("You are not adding any recipe!", "danger")
+        return redirect("/")
+
+    recipe = Recipe.query.filter_by(searchID=searchid).first_or_404()
+    Favorites.query.filter(Favorites.user_id == g.user.id, Favorites.recipe_id == recipe.id).delete()
+    db.session.commit()
+
+    flash("you removed from your favorites", "success")
+    return redirect(f"/recipe/{searchid}")
+
+
+
 ############################################################################
 # API 
 

@@ -16,7 +16,7 @@ app = Flask(__name__)
 # if not set there, use development local db.
 URI = os.environ.get('DATABASE_URL', 'postgresql:///W2E')
 if URI.startswith("postgres://"):
-    URI = URI.replace("postgres://", "postgresq://", 1)
+    URI = URI.replace("postgres://", "postgresql://", 1)
 app.config['SQLALCHEMY_DATABASE_URI'] = URI
     
 

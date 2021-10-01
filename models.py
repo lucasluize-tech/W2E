@@ -67,8 +67,6 @@ class User(db.Model):
         default = '/static/imgs/default-avatar.jpg'
     )
 
-    recipes = db.relationship('Recipe')
-
 
     favs = db.relationship(
         'Recipe',
@@ -145,11 +143,6 @@ class Recipe(db.Model):
         default = datetime.utcnow()
     )
 
-    user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id', ondelete='CASCADE'),
-        nullable=False,
-    )
 
     image_url = db.Column(
         db.Text,
@@ -157,19 +150,16 @@ class Recipe(db.Model):
         default='https://w7.pngwing.com/pngs/424/17/png-transparent-pierogi-kulich-roulade-cooking-recipe-cooking-purple-violet-recipe.png'
     )
 
-    user = db.relationship('User', overlaps='recipes')
-
     def __repr__(self):
         return f"<Recipe #{self.id}: {self.name}, {self.searchID}>"
 
     @classmethod
-    def create(cls, name, searchID, user_id, image_url):
+    def create(cls, name, searchID, image_url):
         """ Add recipe to database """
 
         recipe = Recipe(
             name=name,
             searchID=searchID,
-            user_id=user_id,
             image_url=image_url,
         )
 

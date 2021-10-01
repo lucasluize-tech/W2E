@@ -3,12 +3,12 @@ from models import connect_db, db, User, Recipe, Favorites
 from forms import UserAddForm, UserEditForm, LoginForm
 from flask_migrate import Migrate
 import os, requests, re
-from admin import get_admin, get_key
+# from admin import get_admin, get_key
 from sqlalchemy.exc import IntegrityError, NoResultFound
 
 CURR_USER_KEY = "curr_user"
 API_URL = "https://www.themealdb.com/api/json/v2"
-API_KEY = os.environ.get('API_KEY', get_key())
+API_KEY = os.environ.get('API_KEY')
 
 app = Flask(__name__)
 
@@ -26,7 +26,7 @@ app.config['SQLALCHEMY_ECHO'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "keepSecret")
 
-get_admin(app)
+# get_admin(app)
 
 connect_db(app)
 migrate = Migrate(app, db)

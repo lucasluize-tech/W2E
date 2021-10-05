@@ -1,19 +1,20 @@
-from flask import Flask, render_template, redirect, request, session, flash, g
+from flask import Flask, render_template, redirect, request, session, url_for, flash, g
 from models import connect_db, db, User, Recipe, Favorites
 from forms import UserAddForm, UserEditForm, LoginForm
 from flask_migrate import Migrate
 import os, requests, re
-# from admin import get_admin, get_key
+from admin import get_admin, get_key
 from sqlalchemy.exc import IntegrityError, NoResultFound
 
 CURR_USER_KEY = "curr_user"
 API_URL = "https://www.themealdb.com/api/json/v2"
-API_KEY = os.environ.get('API_KEY')
+API_KEY = get_key()
 
 app = Flask(__name__)
 
 # Get DB_URI from environ variable (useful for production/testing) or,
 # if not set there, use development local db.
+
 URI = os.environ.get('DATABASE_URL', 'postgresql:///W2E')
 if URI.startswith("postgres://"):
     URI = URI.replace("postgres://", "postgresql://", 1)
@@ -26,7 +27,7 @@ app.config['SQLALCHEMY_ECHO'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "keepSecret")
 
-# get_admin(app)
+get_admin(app)
 
 connect_db(app)
 migrate = Migrate(app, db)
@@ -57,6 +58,31 @@ def do_logout():
 
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
+
+@app.route('/register/<int:id>', methods=["GET", "POST"])
+def register_and_recipe(id):
+    form = UserAddForm()
+
+    if form.validate_on_submit():
+        try:
+            user = User.signup(
+                username=form.username.data,
+                password=form.password.data,
+                email=form.email.data,
+                image_url=form.image_url.data or User.image_url.default.arg,
+            )
+            db.session.commit()
+
+        except IntegrityError:
+            flash("Username already taken", 'danger')
+            return render_template('/user/register.html', form=form)
+
+        do_login(user)
+
+        return redirect(f"/recipe/{id}")
+
+    else:
+        return render_template('/user/register.html', form=form)
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
@@ -242,7 +268,7 @@ def recipe(searchid):
     # check for logged user
     if not g.user:
         flash("Access unauthorized, login or register first!", "danger")
-        return redirect("/")
+        return redirect(url_for("register_and_recipe", id=searchid))
 
     else:
         req = requests.get(f'{API_URL}/{API_KEY}/lookup.php?i={searchid}')
